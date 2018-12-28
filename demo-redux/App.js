@@ -2,8 +2,24 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
+import { connect } from 'react-redux';
 
-export default class App extends React.Component {
+const { createStore } = require('redux');
+const defaultState = { value: 0 };
+
+const reducer = (state = defaultState, action) => {
+    if (action.type === 'UP') {
+        return { value: state.value + 1 };
+    }
+    if (action.type === 'DOWN') {
+        return { value: state.value - 1 };
+    }
+    return state;
+};
+
+const store = createStore(reducer);
+
+class App extends React.Component {
   state = {
     isLoadingComplete: false,
   };
@@ -54,9 +70,15 @@ export default class App extends React.Component {
   };
 }
 
+function mapStateToProps(state) {
+    return { myValue: state.value };
+}
+
+export default connect(mapStateToProps)(App);
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
 });
